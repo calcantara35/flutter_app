@@ -29,29 +29,27 @@ class _MaterialLoginFormState extends State<MaterialLoginForm> {
                   ),
                   Card(
                     margin: const EdgeInsets.all(20),
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Form(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                    labelText: "Email Address"),
-                                keyboardType: TextInputType.emailAddress,
-                                autocorrect: false,
-                                textCapitalization: TextCapitalization.none,
-                              ),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                    labelText: "Password"),
-                                keyboardType: TextInputType.text,
-                                autocorrect: false,
-                                textCapitalization: TextCapitalization.none,
-                              ),
-                            ],
-                          ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Form(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                  labelText: "Email Address"),
+                              keyboardType: TextInputType.emailAddress,
+                              autocorrect: false,
+                              textCapitalization: TextCapitalization.none,
+                            ),
+                            TextFormField(
+                              decoration:
+                                  const InputDecoration(labelText: "Password"),
+                              keyboardType: TextInputType.text,
+                              autocorrect: false,
+                              textCapitalization: TextCapitalization.none,
+                            ),
+                          ],
                         ),
                       ),
                     ),

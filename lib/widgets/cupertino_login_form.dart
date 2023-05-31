@@ -19,13 +19,15 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
         )),
     Category(
         title: 'Geico Explore',
-        image: Image.asset("assets/images/steering_wheel.jpeg")),
+        image: Image.asset(
+          "assets/images/map.png",
+        )),
     Category(
         title: 'Roadside Assistance',
-        image: Image.asset("assets/images/steering_wheel.jpeg")),
+        image: Image.asset("assets/images/pickuptruck.png")),
     Category(
         title: 'Start a New Claim',
-        image: Image.asset("assets/images/steering_wheel.jpeg"))
+        image: Image.asset("assets/images/claim.png"))
   ];
   bool isLoading = false;
   bool obscureText = true;
@@ -105,6 +107,8 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                   textInputAction: TextInputAction.done,
                 ),
               ),
+
+              /// switch to show password
               Container(
                 margin: const EdgeInsets.only(top: 5),
                 padding: const EdgeInsets.only(
@@ -112,7 +116,6 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                 alignment: Alignment.topLeft,
                 child: Row(
                   children: <Widget>[
-                    /// switch to show password
                     CupertinoSwitch(
                       trackColor: CupertinoColors.lightBackgroundGray,
                       value: !obscureText,
@@ -131,14 +134,15 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                   ],
                 ),
               ),
+              // login button
               Container(
                 padding: const EdgeInsets.only(
                     top: 0, bottom: 0, right: 10, left: 10),
                 width: double.infinity,
                 child: CupertinoButton(
+                  borderRadius: const BorderRadius.all(Radius.zero),
                   color: const Color.fromARGB(255, 73, 164, 73),
                   onPressed: isLoading ? null : login,
-                  // login button
                   child: isLoading
                       ? const CupertinoActivityIndicator()
                       : Text(
@@ -151,6 +155,7 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                         ),
                 ),
               ),
+              // forgot user id and signup
               Container(
                 padding: const EdgeInsets.all(5),
                 margin: const EdgeInsets.only(top: 20, right: 10, left: 11),
@@ -158,7 +163,6 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    // forgot user id and signup
                     Text(
                       "Forget User ID/Password?",
                       style: TextStyle(
@@ -203,8 +207,6 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                 ),
                 padding: const EdgeInsets.only(
                     top: 10, bottom: 10, left: 10, right: 10),
-                margin:
-                    const EdgeInsets.only(top: 0, bottom: 6, left: 0, right: 0),
                 child: Row(
                   children: <Widget>[
                     Image.asset(
@@ -216,9 +218,12 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                     const SizedBox(
                       width: 20,
                     ),
-                    const Text(
+                    Text(
                       "View Your Saved ID Cards",
                       textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: CupertinoTheme.of(context)
+                              .primaryContrastingColor),
                     ),
                     const SizedBox(
                       width: 70,
@@ -231,11 +236,8 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                 ),
               ),
               Container(
-                height: 600,
-                decoration: BoxDecoration(
-                    color: CupertinoColors.white,
-                    border: Border.all(
-                        width: 1, color: CupertinoColors.darkBackgroundGray)),
+                height: 500,
+                color: CupertinoColors.white,
                 child: GridView(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,

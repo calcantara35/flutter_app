@@ -36,6 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   transparent_image: ^2.0.1
+  google_fonts: ^4.0.5
 
 dev_dependencies:
   flutter_test:
@@ -64,7 +65,9 @@ flutter:
     - assets/images/geico.jpeg
     - assets/images/idcard.jpeg
     - assets/images/steering_wheel.jpeg
-
+    - assets/images/claim.png
+    - assets/images/map.png
+    - assets/images/pickuptruck.png 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

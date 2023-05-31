@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RoundedCupertinoNavigationBar extends StatelessWidget
     implements ObstructingPreferredSizeWidget {
@@ -16,10 +17,10 @@ class RoundedCupertinoNavigationBar extends StatelessWidget
         bottomRight: Radius.circular(10),
       ),
       child: CupertinoNavigationBar(
-        leading: Text(
-          "Geico",
-          style: CupertinoTheme.of(context).textTheme.navTitleTextStyle,
-        ),
+        leading: Text("Geico".toUpperCase(),
+            style: GoogleFonts.titilliumWeb(
+                textStyle:
+                    CupertinoTheme.of(context).textTheme.navTitleTextStyle)),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

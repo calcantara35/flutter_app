@@ -10,25 +10,50 @@ class CupertinoDashboardItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => {},
       child: Container(
-          height: 400,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Column(children: [
-            Text(
-              category.title,
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              softWrap: true,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: CupertinoColors.systemBlue),
+        decoration: const BoxDecoration(
+          border: Border(
+            right: BorderSide(
+              color: CupertinoColors.black,
+              width: 1,
             ),
-            Container(alignment: Alignment.center, child: category.image),
-          ])),
+            left: BorderSide(
+              color: CupertinoColors.black,
+              width: 1,
+            ),
+            bottom: BorderSide(
+              color: CupertinoColors.black,
+              width: 1,
+            ),
+          ),
+        ),
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: const EdgeInsets.only(
+                top: 10,
+              ),
+              child: Text(
+                category.title,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: CupertinoColors.black),
+              ),
+            ),
+            Expanded(
+                flex: 3,
+                child: Container(
+                    margin: const EdgeInsets.only(
+                      bottom: 10,
+                    ),
+                    child: category.image)),
+          ],
+        ),
+      ),
     );
   }
 }
