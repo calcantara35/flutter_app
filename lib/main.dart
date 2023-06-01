@@ -3,12 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:geico_mock_login/screens/login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   // Locking device orientation
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 

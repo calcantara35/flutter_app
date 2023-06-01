@@ -30,8 +30,13 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
         image: Image.asset("assets/images/claim.png"))
   ];
   bool isLoading = false;
+  bool _isLogin = true;
   bool obscureText = true;
   bool enableSavePassword = false;
+  String? _errorUserNameText;
+  String? _errorPasswordText;
+  final _userNameEditingController = TextEditingController();
+  final _passwordEditingController = TextEditingController();
 
   void login() {
     setState(() {
@@ -40,12 +45,50 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
       // You can call a login API or any other authentication mechanism
       // Use setState to update isLoading and trigger a rebuild of the widget
     });
+    print(_userNameEditingController.text);
+    print(_passwordEditingController.text);
+  }
+
+  /// <Summary>
+  /// User ID/Email/Policy Number input field validation.
+  /// Calls setState to update the UI in real time.
+  /// </Summary>
+  void _validateUserNameInput(String value) {
+    setState(() {
+      if (value.trim().characters.isEmpty) {
+        _errorUserNameText = 'Field cannot be empty';
+      } else {
+        _errorUserNameText = null;
+      }
+    });
+  }
+
+  /// <Summary>
+  /// Password input field validation.
+  /// Calls setState to update the UI in real time.
+  /// </Summary>
+  void _validatePassword(String value) {
+    setState(() {
+      if (value.trim().characters.isEmpty) {
+        _errorPasswordText = 'Field cannot be empty';
+      } else {
+        _errorPasswordText = null;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _userNameEditingController.dispose();
+    _passwordEditingController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: CupertinoPageScaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: const Color.fromRGBO(55, 114, 200, 1),
         navigationBar: const RoundedCupertinoNavigationBar(),
         child: SafeArea(
@@ -73,18 +116,40 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                     top: 0, bottom: 5, left: 10, right: 10),
 
                 /// Email Input
-                child: const CupertinoTextField(
-                  prefix: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Icon(
-                      CupertinoIcons.person_fill,
-                      color: Color.fromARGB(255, 22, 74, 249),
+                child: Column(
+                  children: <Widget>[
+                    CupertinoTextField(
+                      prefix: const Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          CupertinoIcons.person_fill,
+                          color: Color.fromARGB(255, 22, 74, 249),
+                        ),
+                      ),
+                      placeholder: 'User ID/Email/Policy Number',
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _userNameEditingController,
+                      autocorrect: false,
+                      textInputAction: TextInputAction.next,
+                      onChanged: (value) => _validateUserNameInput(value),
+                      onSubmitted: (value) {
+                        _userNameEditingController.text = value;
+                      },
                     ),
-                  ),
-                  placeholder: 'User ID/Email/Policy Number',
-                  keyboardType: TextInputType.emailAddress,
-                  autocorrect: false,
-                  textInputAction: TextInputAction.next,
+                    if (_errorUserNameText != null)
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(top: 4, left: 4),
+                        child: Text(
+                          _errorUserNameText!,
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(
+                              color: CupertinoColors.destructiveRed,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )
+                  ],
                 ),
               ),
               Container(
@@ -94,17 +159,39 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                     top: 0, bottom: 0, left: 10, right: 10),
 
                 /// password input
-                child: CupertinoTextField(
-                  prefix: const Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Icon(
-                      CupertinoIcons.lock_fill,
-                      color: Color.fromARGB(255, 22, 74, 249),
+                child: Column(
+                  children: [
+                    CupertinoTextField(
+                      prefix: const Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          CupertinoIcons.lock_fill,
+                          color: Color.fromARGB(255, 22, 74, 249),
+                        ),
+                      ),
+                      placeholder: 'Password',
+                      controller: _passwordEditingController,
+                      onChanged: (value) => _validatePassword(value),
+                      obscureText: obscureText,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (value) {
+                        _passwordEditingController.text = value;
+                      },
                     ),
-                  ),
-                  placeholder: 'Password',
-                  obscureText: obscureText,
-                  textInputAction: TextInputAction.done,
+                    if (_errorPasswordText != null)
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(top: 4, left: 4),
+                        child: Text(
+                          _errorPasswordText!,
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(
+                              color: CupertinoColors.destructiveRed,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )
+                  ],
                 ),
               ),
 
@@ -146,7 +233,9 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                   child: isLoading
                       ? const CupertinoActivityIndicator()
                       : Text(
-                          'Log In'.toUpperCase(),
+                          _isLogin
+                              ? 'Log In'.toUpperCase()
+                              : "Create Account".toUpperCase(),
                           style: TextStyle(
                               letterSpacing: 1.5,
                               fontWeight: FontWeight.bold,
@@ -157,39 +246,52 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
               ),
               // forgot user id and signup
               Container(
-                padding: const EdgeInsets.all(5),
-                margin: const EdgeInsets.only(top: 20, right: 10, left: 11),
+                margin: const EdgeInsets.only(
+                  top: 20,
+                ),
                 width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text(
-                      "Forget User ID/Password?",
-                      style: TextStyle(
-                          color: CupertinoTheme.of(context)
-                              .primaryContrastingColor),
-                    ),
-                    Text(
-                      "Sign Up",
-                      style: TextStyle(
-                          color: CupertinoTheme.of(context)
-                              .primaryContrastingColor),
+                    CupertinoButton(
+                        onPressed: () {},
+                        child: Text(
+                          "Forget User ID/Password?",
+                          style: TextStyle(
+                              color: CupertinoTheme.of(context)
+                                  .primaryContrastingColor),
+                        )),
+                    CupertinoButton(
+                      onPressed: () {
+                        setState(() {
+                          _isLogin = !_isLogin;
+                        });
+                      },
+                      child: Text(
+                        _isLogin ? "Sign Up" : "Log in",
+                        style: TextStyle(
+                            color: CupertinoTheme.of(context)
+                                .primaryContrastingColor),
+                      ),
                     )
                   ],
                 ),
               ),
               Container(
-                margin: const EdgeInsets.only(top: 10, left: 12),
-                padding: const EdgeInsets.all(5),
-                width: double.infinity,
-                // continue as a guest
-                child: Text(
-                  "Continue as Guest",
-                  style: TextStyle(
-                      color:
-                          CupertinoTheme.of(context).primaryContrastingColor),
-                ),
-              ),
+                  margin: const EdgeInsets.only(left: 1),
+                  alignment: Alignment.centerLeft,
+                  width: double.infinity,
+                  // continue as a guest
+                  child: CupertinoButton(
+                    onPressed: () {},
+                    child: Text(
+                      "Continue as Guest",
+                      style: TextStyle(
+                          color: CupertinoTheme.of(context)
+                              .primaryContrastingColor),
+                    ),
+                  )),
               const SizedBox(
                 height: 10,
               ),
@@ -236,14 +338,14 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                 ),
               ),
               Container(
-                height: 500,
+                height: 262,
                 color: CupertinoColors.white,
                 child: GridView(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 3 / 2,
-                    crossAxisSpacing: 1,
-                    mainAxisSpacing: 1,
+                    crossAxisSpacing: 0,
+                    mainAxisSpacing: 0,
                   ),
                   children: <Widget>[
                     for (final category in categoryList)

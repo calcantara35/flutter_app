@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "43901934839",
+    "project_id": "work-project-e592b",
+    "storage_bucket": "work-project-e592b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:43901934839:android:3874197cbff92b9f0c47f2",
+        "android_client_info": {
+          "package_name": "com.example.geico_mock_login"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBA_5Fpa8d2Q8KeMleiq8VjP0tRMeKb7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
