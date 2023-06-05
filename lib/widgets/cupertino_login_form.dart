@@ -62,10 +62,6 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
     if (isAuthenticated) {
       try {
         // sign in with Firebase using FaceID Credentials
-        UserCredential userCredential = await _firebase.signInWithCredential(
-            AuthCredential(
-                providerId: AppleAuthProvider.PROVIDER_ID,
-                signInMethod: AppleAuthProvider.APPLE_SIGN_IN_METHOD));
       } catch (err) {
         print(err);
       }
