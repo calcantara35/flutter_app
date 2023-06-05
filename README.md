@@ -1,6 +1,6 @@
 # Mock App
 
-A new Flutter project.
+A new Flutter project. For this project, I only focused on developing for iOS and Android. Leaving the other platform folders in the repo just to display how code structure would look like.
 
 ## Getting Started
 
