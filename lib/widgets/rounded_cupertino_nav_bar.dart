@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geico_mock_login/screens/logout.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class RoundedCupertinoNavigationBar extends StatelessWidget
@@ -19,8 +20,9 @@ class RoundedCupertinoNavigationBar extends StatelessWidget
       child: CupertinoNavigationBar(
         leading: Text("Geico".toUpperCase(),
             style: GoogleFonts.titilliumWeb(
-                textStyle:
-                    CupertinoTheme.of(context).textTheme.navTitleTextStyle)),
+                textStyle: CupertinoTheme.of(context)
+                    .textTheme
+                    .navLargeTitleTextStyle)),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -47,7 +49,10 @@ class RoundedCupertinoNavigationBar extends StatelessWidget
                 )),
             CupertinoButton(
               padding: const EdgeInsets.all(0),
-              onPressed: () => {},
+              onPressed: () {
+                Navigator.of(context).push(
+                    CupertinoPageRoute(builder: (_) => const LogOutScreen()));
+              },
               child: Icon(
                 CupertinoIcons.settings,
                 color: CupertinoTheme.of(context).primaryContrastingColor,

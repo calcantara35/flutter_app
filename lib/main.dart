@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:geico_mock_login/screens/dashboard.dart';
 import 'package:geico_mock_login/screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:geico_mock_login/screens/splash.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -31,10 +34,10 @@ class MyApp extends StatelessWidget {
     The context passed around will use the CupertinoApp not Material/
   */
   CupertinoApp buildCupertinoApp() {
-    return const CupertinoApp(
+    return CupertinoApp(
       title: 'Geico',
       color: Color.fromARGB(255, 19, 73, 148),
-      theme: CupertinoThemeData(
+      theme: const CupertinoThemeData(
         barBackgroundColor: Color.fromRGBO(19, 73, 148, 1),
         primaryContrastingColor: CupertinoColors.white,
         textTheme: CupertinoTextThemeData(
@@ -66,7 +69,23 @@ class MyApp extends StatelessWidget {
         ),
         primaryColor: Color.fromARGB(255, 19, 73, 148),
       ),
-      home: LoginScreen(),
+      // stream is coming from firebase auth, returns a stream, setting up a listemer
+      // firenase will emmit a new value when something changes
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: ((context, snapshot) {
+          // if fire base is still determining if there is a token or not..
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SplashScreen();
+          }
+          // token found from firebase, display dashboard screen
+          if (snapshot.hasData) {
+            return const DashboardScreen();
+          }
+
+          return const LoginScreen();
+        }),
+      ),
     );
   }
 

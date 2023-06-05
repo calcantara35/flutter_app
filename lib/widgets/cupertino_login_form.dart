@@ -2,6 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:geico_mock_login/widgets/cupertino_dashboard_item.dart';
 import 'package:geico_mock_login/widgets/rounded_cupertino_nav_bar.dart';
 import 'package:geico_mock_login/models/category.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:local_auth/local_auth.dart';
+
+/// fire base object that is maintained in the SDK
+final _firebase = FirebaseAuth.instance;
+final LocalAuthentication _localAuth = LocalAuthentication();
 
 class CupertinoLoginForm extends StatefulWidget {
   const CupertinoLoginForm({super.key});
@@ -29,24 +35,71 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
         title: 'Start a New Claim',
         image: Image.asset("assets/images/claim.png"))
   ];
-  bool isLoading = false;
+  bool _firebaseMessageOccurred = false;
+  bool _isLoading = false;
   bool _isLogin = true;
-  bool obscureText = true;
+  bool _obscureText = true;
   bool enableSavePassword = false;
   String? _errorUserNameText;
   String? _errorPasswordText;
+  String? _errorFireBaseAuthMessage;
   final _userNameEditingController = TextEditingController();
   final _passwordEditingController = TextEditingController();
 
-  void login() {
+  Future<void> authenticateWithBiometrics() async {
+    // check if Face ID is available on the device
+    bool hasBiometrics = await _localAuth.canCheckBiometrics;
+    if (!hasBiometrics) {
+      // faceid is not available
+      // show error message
+      return;
+    }
+
+    // Authenticate with face id
+    bool isAuthenticated = await _localAuth.authenticate(
+        localizedReason: 'Authenticate with Face ID',
+        options: AuthenticationOptions(biometricOnly: true));
+    if (isAuthenticated) {
+      try {
+        // sign in with Firebase using FaceID Credentials
+        UserCredential userCredential = await _firebase.signInWithCredential(
+            AuthCredential(
+                providerId: AppleAuthProvider.PROVIDER_ID,
+                signInMethod: AppleAuthProvider.APPLE_SIGN_IN_METHOD));
+      } catch (err) {
+        print(err);
+      }
+    }
+  }
+
+  /// <Summary>
+  /// Based on the isLogin boolean flag, we will be signing in the user or
+  /// signing the user up. Login/Sign up is wrapped within a trycatch and
+  /// if an error occurs, setState will rebuild the widget tree displaying
+  /// an error message at above the input fields stating what error occurred.
+  /// </Summary
+  void submit() async {
     setState(() {
-      isLoading = true;
-      // Perform login logic here
-      // You can call a login API or any other authentication mechanism
-      // Use setState to update isLoading and trigger a rebuild of the widget
+      _isLoading = true;
     });
-    print(_userNameEditingController.text);
-    print(_passwordEditingController.text);
+    try {
+      if (_isLogin) {
+        // log users in
+        final userCredentials = await _firebase.signInWithEmailAndPassword(
+            email: _userNameEditingController.text,
+            password: _passwordEditingController.text);
+      } else {
+        // sign users up
+        final userCredentials = await _firebase.createUserWithEmailAndPassword(
+            email: _userNameEditingController.text,
+            password: _passwordEditingController.text);
+      }
+    } on FirebaseAuthException catch (err) {
+      setState(() {
+        _firebaseMessageOccurred = true;
+      });
+      _errorFireBaseAuthMessage = err.message ?? "An error occurred!";
+    }
   }
 
   /// <Summary>
@@ -95,6 +148,27 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              if (_firebaseMessageOccurred)
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    margin: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                        border:
+                            Border.all(color: CupertinoColors.white, width: 3),
+                        borderRadius: BorderRadius.circular(5),
+                        boxShadow: List.filled(2,
+                            BoxShadow(color: CupertinoColors.destructiveRed))),
+                    child: Text(
+                      _errorFireBaseAuthMessage!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: CupertinoColors.white),
+                    ),
+                  ),
+                ),
               Container(
                 padding: const EdgeInsets.all(10),
                 margin: const EdgeInsets.only(
@@ -172,7 +246,7 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                       placeholder: 'Password',
                       controller: _passwordEditingController,
                       onChanged: (value) => _validatePassword(value),
-                      obscureText: obscureText,
+                      obscureText: _obscureText,
                       textInputAction: TextInputAction.done,
                       onSubmitted: (value) {
                         _passwordEditingController.text = value;
@@ -205,10 +279,10 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                   children: <Widget>[
                     CupertinoSwitch(
                       trackColor: CupertinoColors.lightBackgroundGray,
-                      value: !obscureText,
+                      value: !_obscureText,
                       onChanged: ((value) {
                         setState(() {
-                          obscureText = !value;
+                          _obscureText = !value;
                         });
                       }),
                     ),
@@ -229,8 +303,8 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
                 child: CupertinoButton(
                   borderRadius: const BorderRadius.all(Radius.zero),
                   color: const Color.fromARGB(255, 73, 164, 73),
-                  onPressed: isLoading ? null : login,
-                  child: isLoading
+                  onPressed: _isLoading ? null : submit,
+                  child: _isLoading
                       ? const CupertinoActivityIndicator()
                       : Text(
                           _isLogin
