@@ -81,12 +81,12 @@ class _CupertinoLoginFormState extends State<CupertinoLoginForm> {
     try {
       if (_isLogin) {
         // log users in
-        final userCredentials = await _firebase.signInWithEmailAndPassword(
+        await _firebase.signInWithEmailAndPassword(
             email: _userNameEditingController.text,
             password: _passwordEditingController.text);
       } else {
         // sign users up
-        final userCredentials = await _firebase.createUserWithEmailAndPassword(
+        await _firebase.createUserWithEmailAndPassword(
             email: _userNameEditingController.text,
             password: _passwordEditingController.text);
       }
